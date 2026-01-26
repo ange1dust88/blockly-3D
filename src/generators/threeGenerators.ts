@@ -47,3 +47,25 @@ forBlock["set_color"] = function (
 
   return `setObjectColor("${varName}", ${r}, ${g}, ${b});\n`;
 };
+
+forBlock["set_material"] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const varName = block.getFieldValue("VAR");
+  const materialType = block.getFieldValue("MATERIAL");
+
+  return `setObjectMaterial("${varName}", "${materialType}");\n`;
+};
+
+forBlock["set_scale"] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const varName = block.getFieldValue("VAR");
+  const x = generator.valueToCode(block, "X", Order.ATOMIC) || "1";
+  const y = generator.valueToCode(block, "Y", Order.ATOMIC) || "1";
+  const z = generator.valueToCode(block, "Z", Order.ATOMIC) || "1";
+
+  return `setObjectScale("${varName}", ${x}, ${y}, ${z});\n`;
+};

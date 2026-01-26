@@ -20,6 +20,8 @@ import {
   setObjectColor,
   setObjectRotation,
   setObjectPosition,
+  setObjectMaterial,
+  setObjectScale,
 } from "./threeResult";
 
 import "./index.css";
@@ -54,12 +56,13 @@ const runCode = () => {
 
   try {
     eval(`
-      // Доступные переменные в eval
       const threeObjects = window.threeObjects;
       const addObject = window.addObject;
       const setObjectPosition = window.setObjectPosition;
       const setObjectRotation = window.setObjectRotation;
       const setObjectColor = window.setObjectColor;
+      const setObjectMaterial = window.setObjectMaterial;
+      const setObjectScale = window.setObjectScale;
       
       ${code}
     `);
@@ -69,12 +72,13 @@ const runCode = () => {
   }
 };
 
-// Делаем ВСЕ функции доступными глобально для eval
 (window as any).threeObjects = threeObjects;
 (window as any).addObject = addObject;
 (window as any).setObjectPosition = setObjectPosition;
 (window as any).setObjectRotation = setObjectRotation;
 (window as any).setObjectColor = setObjectColor;
+(window as any).setObjectMaterial = setObjectMaterial;
+(window as any).setObjectScale = setObjectScale;
 (window as any).clearScene = clearScene;
 
 ws.addChangeListener((e: Blockly.Events.Abstract) => {

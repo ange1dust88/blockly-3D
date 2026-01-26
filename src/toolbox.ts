@@ -23,6 +23,8 @@ export const toolbox = {
         { kind: "block", type: "set_position" },
         { kind: "block", type: "set_rotation" },
         { kind: "block", type: "set_color" },
+        { kind: "block", type: "set_material" },
+        { kind: "block", type: "set_scale" },
       ],
     },
 

@@ -145,4 +145,72 @@ export const blocks = {
       });
     },
   },
+
+  set_material: {
+    init: function (this: Blockly.Block) {
+      this.jsonInit({
+        message0: "set material of %1 to %2",
+        args0: [
+          {
+            type: "field_variable",
+            name: "VAR",
+            variable: "obj",
+          },
+          {
+            type: "field_dropdown",
+            name: "MATERIAL",
+            options: [
+              ["basic", "basic"],
+              ["phong", "phong"],
+              ["standard", "standard"],
+              ["wireframe", "wireframe"],
+            ],
+          },
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 180,
+        tooltip: "Sets material type",
+        helpUrl: "",
+      });
+    },
+  },
+
+  set_scale: {
+    init: function (this: Blockly.Block) {
+      this.jsonInit({
+        message0: "scale %1 by X: %2 Y: %3 Z: %4",
+        args0: [
+          {
+            type: "field_variable",
+            name: "VAR",
+            variable: "obj",
+          },
+          {
+            type: "input_value",
+            name: "X",
+            check: "Number",
+            align: "RIGHT",
+          },
+          {
+            type: "input_value",
+            name: "Y",
+            check: "Number",
+            align: "RIGHT",
+          },
+          {
+            type: "input_value",
+            name: "Z",
+            check: "Number",
+            align: "RIGHT",
+          },
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 200,
+        tooltip: "Scales an object",
+        helpUrl: "",
+      });
+    },
+  },
 };

@@ -1,6 +1,9 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 (window as any).THREE = THREE;
+
+let orbitControls: OrbitControls | null = null;
 
 export function initThree(containerId: string) {
   const container = document.getElementById(containerId);
@@ -8,6 +11,13 @@ export function initThree(containerId: string) {
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  directionalLight.position.set(5, 5, 5);
+  scene.add(directionalLight);
 
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -21,10 +31,22 @@ export function initThree(containerId: string) {
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
+  orbitControls = new OrbitControls(camera, renderer.domElement);
+  orbitControls.enableDamping = true;
+  orbitControls.dampingFactor = 0.05;
+  orbitControls.screenSpacePanning = false;
+  orbitControls.minDistance = 1;
+  orbitControls.maxDistance = 100;
+  orbitControls.maxPolarAngle = Math.PI;
+
   const objects: THREE.Mesh[] = [];
 
   function animate() {
     requestAnimationFrame(animate);
+
+    if (orbitControls) {
+      orbitControls.update();
+    }
 
     renderer.render(scene, camera);
   }
@@ -36,7 +58,35 @@ export function initThree(containerId: string) {
     renderer.setSize(container.clientWidth, container.clientHeight);
   });
 
-  return { scene, camera, renderer, objects };
+  return { scene, camera, renderer, objects, controls: orbitControls };
+}
+
+export function setCameraControls(enabled: boolean) {
+  if (orbitControls) {
+    orbitControls.enabled = enabled;
+  }
+}
+
+export function resetCamera() {
+  if (orbitControls) {
+    orbitControls.reset();
+  }
+}
+
+export function setCameraConstraints(
+  minDistance: number,
+  maxDistance: number,
+  enableRotate: boolean,
+  enableZoom: boolean,
+  enablePan: boolean,
+) {
+  if (!orbitControls) return;
+
+  orbitControls.minDistance = minDistance;
+  orbitControls.maxDistance = maxDistance;
+  orbitControls.enableRotate = enableRotate;
+  orbitControls.enableZoom = enableZoom;
+  orbitControls.enablePan = enablePan;
 }
 
 const objectsMap: Record<string, THREE.Mesh> = {};
@@ -74,8 +124,6 @@ export function addObject(
 
   threeObjects.scene.add(mesh);
   threeObjects.objects.push(mesh);
-
-  // Сохраняем объект в мапе по имени переменной
   objectsMap[varName] = mesh;
   mesh.userData = { varName };
 }
@@ -127,6 +175,78 @@ export function setObjectColor(
   mesh.material.color.setRGB(r / 255, g / 255, b / 255);
 }
 
+export function setObjectMaterial(varName: string, materialType: string) {
+  const mesh = objectsMap[varName];
+  if (!mesh) {
+    console.warn(`Object ${varName} not found`);
+    return;
+  }
+
+  let newMaterial: THREE.Material;
+
+  switch (materialType) {
+    case "phong":
+      newMaterial = new THREE.MeshPhongMaterial({
+        color:
+          mesh.material instanceof THREE.MeshBasicMaterial
+            ? mesh.material.color.getHex()
+            : 0x00ff00,
+      });
+      break;
+    case "standard":
+      newMaterial = new THREE.MeshStandardMaterial({
+        color:
+          mesh.material instanceof THREE.MeshBasicMaterial
+            ? mesh.material.color.getHex()
+            : 0x00ff00,
+      });
+      break;
+    case "wireframe":
+      newMaterial = new THREE.MeshBasicMaterial({
+        color:
+          mesh.material instanceof THREE.MeshBasicMaterial
+            ? mesh.material.color.getHex()
+            : 0x00ff00,
+        wireframe: true,
+      });
+      break;
+    case "basic":
+    default:
+      newMaterial = new THREE.MeshBasicMaterial({
+        color:
+          mesh.material instanceof THREE.MeshBasicMaterial
+            ? mesh.material.color.getHex()
+            : 0x00ff00,
+      });
+      break;
+  }
+
+  if (mesh.material) {
+    if (Array.isArray(mesh.material)) {
+      mesh.material.forEach((mat) => mat.dispose());
+    } else {
+      mesh.material.dispose();
+    }
+  }
+
+  mesh.material = newMaterial;
+}
+
+export function setObjectScale(
+  varName: string,
+  x: number,
+  y: number,
+  z: number,
+) {
+  const mesh = objectsMap[varName];
+  if (!mesh) {
+    console.warn(`Object ${varName} not found`);
+    return;
+  }
+
+  mesh.scale.set(x, y, z);
+}
+
 export function clearScene(threeObjects: any) {
   if (!threeObjects) return;
 
@@ -137,7 +257,6 @@ export function clearScene(threeObjects: any) {
 
   threeObjects.objects.length = 0;
 
-  // Очищаем мапу объектов
   Object.keys(objectsMap).forEach((key) => {
     delete objectsMap[key];
   });
