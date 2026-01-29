@@ -29,6 +29,7 @@
   "dependencies": {
     "blockly": "^12.0.0",
     "three": "^0.182.0",
+    "three-csg-ts": "^3.2.0",
     "three-orbitcontrols": "^2.110.2"
   }
 }

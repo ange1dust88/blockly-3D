@@ -22,6 +22,9 @@ import {
   setObjectPosition,
   setObjectMaterial,
   setObjectScale,
+  csgSubtract,
+  csgUnion,
+  csgIntersect, // ДОБАВЛЯЕМ ИМПОРТ
 } from "./threeResult";
 
 import "./index.css";
@@ -63,6 +66,9 @@ const runCode = () => {
       const setObjectColor = window.setObjectColor;
       const setObjectMaterial = window.setObjectMaterial;
       const setObjectScale = window.setObjectScale;
+      const csgSubtract = window.csgSubtract; 
+      const csgUnion = window.csgUnion;     
+      const csgIntersect = window.csgIntersect; 
       
       ${code}
     `);
@@ -79,6 +85,9 @@ const runCode = () => {
 (window as any).setObjectColor = setObjectColor;
 (window as any).setObjectMaterial = setObjectMaterial;
 (window as any).setObjectScale = setObjectScale;
+(window as any).csgSubtract = csgSubtract;
+(window as any).csgUnion = csgUnion;
+(window as any).csgIntersect = csgIntersect;
 (window as any).clearScene = clearScene;
 
 ws.addChangeListener((e: Blockly.Events.Abstract) => {

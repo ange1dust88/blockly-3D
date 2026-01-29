@@ -69,3 +69,36 @@ forBlock["set_scale"] = function (
 
   return `setObjectScale("${varName}", ${x}, ${y}, ${z});\n`;
 };
+
+forBlock["csg_subtract"] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const varA = block.getFieldValue("VAR_A");
+  const varB = block.getFieldValue("VAR_B");
+  const result = block.getFieldValue("RESULT");
+
+  return `csgSubtract(threeObjects, "${varA}", "${varB}", "${result}");\n`;
+};
+
+forBlock["csg_union"] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const varA = block.getFieldValue("VAR_A");
+  const varB = block.getFieldValue("VAR_B");
+  const result = block.getFieldValue("RESULT");
+
+  return `csgUnion(threeObjects, "${varA}", "${varB}", "${result}");\n`;
+};
+
+forBlock["csg_intersect"] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const varA = block.getFieldValue("VAR_A");
+  const varB = block.getFieldValue("VAR_B");
+  const result = block.getFieldValue("RESULT");
+
+  return `csgIntersect(threeObjects, "${varA}", "${varB}", "${result}");\n`;
+};

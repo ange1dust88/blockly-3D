@@ -18,6 +18,7 @@ export const toolbox = {
     {
       kind: "category",
       name: "3D",
+      categorystyle: "variable_category",
       contents: [
         { kind: "block", type: "add_object" },
         { kind: "block", type: "set_position" },
@@ -25,6 +26,9 @@ export const toolbox = {
         { kind: "block", type: "set_color" },
         { kind: "block", type: "set_material" },
         { kind: "block", type: "set_scale" },
+        { kind: "block", type: "csg_union" },
+        { kind: "block", type: "csg_subtract" },
+        { kind: "block", type: "csg_intersect" },
       ],
     },
 

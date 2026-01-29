@@ -213,4 +213,94 @@ export const blocks = {
       });
     },
   },
+
+  csg_union: {
+    init: function (this: Blockly.Block) {
+      this.jsonInit({
+        message0: "union %1 and %2 store as %3",
+        args0: [
+          {
+            type: "field_variable",
+            name: "VAR_A",
+            variable: "obj",
+          },
+          {
+            type: "field_variable",
+            name: "VAR_B",
+            variable: "obj",
+          },
+          {
+            type: "field_variable",
+            name: "RESULT",
+            variable: "obj",
+          },
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 160,
+        tooltip: "Union of two objects (A ∪ B)",
+        helpUrl: "",
+      });
+    },
+  },
+
+  csg_subtract: {
+    init: function (this: Blockly.Block) {
+      this.jsonInit({
+        message0: "subtract %1 from %2 store as %3",
+        args0: [
+          {
+            type: "field_variable",
+            name: "VAR_A",
+            variable: "obj",
+          },
+          {
+            type: "field_variable",
+            name: "VAR_B",
+            variable: "obj",
+          },
+          {
+            type: "field_variable",
+            name: "RESULT",
+            variable: "obj",
+          },
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 160,
+        tooltip: "Subtract object A from B (B - A)",
+        helpUrl: "",
+      });
+    },
+  },
+
+  csg_intersect: {
+    init: function (this: Blockly.Block) {
+      this.jsonInit({
+        message0: "intersect %1 and %2 store as %3",
+        args0: [
+          {
+            type: "field_variable",
+            name: "VAR_A",
+            variable: "obj",
+          },
+          {
+            type: "field_variable",
+            name: "VAR_B",
+            variable: "obj",
+          },
+          {
+            type: "field_variable",
+            name: "RESULT",
+            variable: "obj",
+          },
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 160,
+        tooltip: "Intersection of two objects (A ∩ B)",
+        helpUrl: "",
+      });
+    },
+  },
 };

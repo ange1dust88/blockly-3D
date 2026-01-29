@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { CSG } from "three-csg-ts";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 (window as any).THREE = THREE;
@@ -260,4 +261,115 @@ export function clearScene(threeObjects: any) {
   Object.keys(objectsMap).forEach((key) => {
     delete objectsMap[key];
   });
+}
+
+function performCSGOperation(
+  threeObjects: any,
+  varA: string,
+  varB: string,
+  resultName: string,
+  operation: "union" | "subtract" | "intersect",
+) {
+  console.log(`CSG ${operation} called: ${varA}, ${varB}, ${resultName}`);
+
+  if (!threeObjects) {
+    console.error("Three.js not initialized");
+    return;
+  }
+
+  const meshA = objectsMap[varA];
+  const meshB = objectsMap[varB];
+
+  if (!meshA || !meshB) {
+    console.warn(`Objects ${varA} or ${varB} not found for CSG ${operation}`);
+    return;
+  }
+
+  const meshAClone = meshA.clone();
+  const meshBClone = meshB.clone();
+
+  meshAClone.updateMatrix();
+  meshBClone.updateMatrix();
+
+  try {
+    const bspA = CSG.fromMesh(meshAClone);
+    const bspB = CSG.fromMesh(meshBClone);
+    let bspResult;
+
+    switch (operation) {
+      case "union":
+        bspResult = bspA.union(bspB);
+        break;
+      case "subtract":
+        bspResult = bspB.subtract(bspA);
+        break;
+      case "intersect":
+        bspResult = bspA.intersect(bspB);
+        break;
+    }
+
+    const resultMesh = CSG.toMesh(bspResult, meshA.matrix);
+
+    if (meshA.material instanceof THREE.Material) {
+      resultMesh.material = meshA.material.clone();
+    } else if (Array.isArray(meshA.material)) {
+      if (meshA.material.length > 0) {
+        resultMesh.material = meshA.material[0].clone();
+      } else {
+        resultMesh.material = new THREE.MeshBasicMaterial({
+          color:
+            operation === "union"
+              ? 0x00ff00
+              : operation === "subtract"
+                ? 0xff0000
+                : 0x0000ff,
+        });
+      }
+    } else {
+      resultMesh.material = new THREE.MeshBasicMaterial({
+        color:
+          operation === "union"
+            ? 0x00ff00
+            : operation === "subtract"
+              ? 0xff0000
+              : 0x0000ff,
+      });
+    }
+
+    threeObjects.scene.add(resultMesh);
+    threeObjects.objects.push(resultMesh);
+    objectsMap[resultName] = resultMesh;
+
+    meshA.visible = false;
+    meshB.visible = false;
+  } catch (error) {
+    console.error(`CSG ${operation} failed:`, error);
+  }
+}
+
+export function csgSubtract(
+  threeObjects: any,
+  varA: string,
+  varB: string,
+  resultName: string,
+) {
+  performCSGOperation(threeObjects, varA, varB, resultName, "subtract");
+}
+
+export function csgUnion(
+  threeObjects: any,
+  varA: string,
+  varB: string,
+  resultName: string,
+) {
+  performCSGOperation(threeObjects, varA, varB, resultName, "union");
+}
+
+export function csgIntersect(
+  threeObjects: any,
+  varA: string,
+  varB: string,
+  resultName: string,
+) {
+  performCSGOperation(threeObjects, varA, varB, resultName, "intersect");
 }
